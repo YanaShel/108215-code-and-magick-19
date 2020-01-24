@@ -9,7 +9,7 @@ var GAP = 15;
 var GAP_FONT = 20;
 var GAP_BETWEEN_COLUMNS = 50;
 var BAR_WIDTH = 40;
-var barHeight = 150;
+var BAR_MAX_HEIGHT = 150;
 
 var renderCloud = function (ctx, x, y, width, heigth, color) {
   var offset = 5;
@@ -66,22 +66,20 @@ window.renderStatistics = function (ctx, names, times) {
 
   var maxTime = getMaxElement(times);
 
-  for (var i = 0; i < names.length; i++) {
-    // отрисовка имени игрока
-    drawText(ctx, names[i], CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * i, CLOUD_Y + CLOUD_HEIGHT - GAP);
-  }
-
-  for (var j = 0; j < times.length; j++) {
-    // отрисовка колонки
-    if (names[j] === 'Вы') {
+  for (var i = 0; i < times.length; i++) {
+    var currentBarHeight = times[i] * BAR_MAX_HEIGHT / maxTime;
+    var currentX = CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * i;
+    var currentY = CLOUD_HEIGHT - currentBarHeight - GAP_FONT - GAP;
+    if (names[i] === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
       var saturationColor = Math.floor(Math.random() * 100);
       ctx.fillStyle = 'hsl(240, ' + saturationColor + '%, 50%)';
     }
-    drawRect(ctx, CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * j, CLOUD_HEIGHT - GAP_FONT, BAR_WIDTH, -times[j] * barHeight / maxTime);
-    // время прохождения игры
+    drawRect(ctx, currentX, CLOUD_HEIGHT - GAP_FONT, BAR_WIDTH, -currentBarHeight);
+
     ctx.fillStyle = '#000';
-    drawText(ctx, Math.floor(times[j]), CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * j, CLOUD_HEIGHT - (times[j] * barHeight / maxTime) - GAP_FONT - GAP);
+    drawText(ctx, Math.floor(times[i]), currentX, currentY);
+    drawText(ctx, names[i], currentX, CLOUD_Y + CLOUD_HEIGHT - GAP);
   }
 };
