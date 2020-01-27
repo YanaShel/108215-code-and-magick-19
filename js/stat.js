@@ -9,7 +9,7 @@ var GAP = 15;
 var GAP_FONT = 20;
 var GAP_BETWEEN_COLUMNS = 50;
 var BAR_WIDTH = 40;
-var barHeight = 150;
+var BAR_MAX_HEIGHT = 150;
 
 var renderCloud = function (ctx, x, y, width, heigth, color) {
   var offset = 5;
@@ -55,6 +55,15 @@ var getMaxElement = function (arr) {
   return maxElement;
 };
 
+var getRandomNumber = function (maxNumber) {
+  return Math.floor(Math.random() * maxNumber);
+};
+
+var getSaturationColor = function (hue, lightness) {
+  var saturationColor = getRandomNumber(101);
+  return 'hsl(' + hue + ', ' + saturationColor + '%, ' + lightness + '%)';
+};
+
 window.renderStatistics = function (ctx, names, times) {
   renderCloud(ctx, CLOUD_X + GAP_SHADOW, CLOUD_Y + GAP_SHADOW, CLOUD_WIDTH, CLOUD_HEIGHT, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, CLOUD_WIDTH, CLOUD_HEIGHT, 'rgba(256, 256, 256, 1.0)');
@@ -66,22 +75,16 @@ window.renderStatistics = function (ctx, names, times) {
 
   var maxTime = getMaxElement(times);
 
-  for (var i = 0; i < names.length; i++) {
-    // отрисовка имени игрока
-    drawText(ctx, names[i], CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * i, CLOUD_Y + CLOUD_HEIGHT - GAP);
-  }
+  for (var i = 0; i < times.length; i++) {
+    var currentBarHeight = times[i] * BAR_MAX_HEIGHT / maxTime;
+    var currentX = CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * i;
+    var currentY = CLOUD_HEIGHT - currentBarHeight - GAP_FONT - GAP;
 
-  for (var j = 0; j < times.length; j++) {
-    // отрисовка колонки
-    if (names[j] === 'Вы') {
-      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-    } else {
-      var saturationColor = Math.floor(Math.random() * 100);
-      ctx.fillStyle = 'hsl(240, ' + saturationColor + '%, 50%)';
-    }
-    drawRect(ctx, CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * j, CLOUD_HEIGHT - GAP_FONT, BAR_WIDTH, -times[j] * barHeight / maxTime);
-    // время прохождения игры
+    ctx.fillStyle = names[i] === 'Вы' ? 'rgba(255, 0, 0, 1)' : getSaturationColor(240, 50);
+    drawRect(ctx, currentX, CLOUD_HEIGHT - GAP_FONT, BAR_WIDTH, -currentBarHeight);
+
     ctx.fillStyle = '#000';
-    drawText(ctx, Math.floor(times[j]), CLOUD_X + GAP * 2 + (BAR_WIDTH + GAP_BETWEEN_COLUMNS) * j, CLOUD_HEIGHT - (times[j] * barHeight / maxTime) - GAP_FONT - GAP);
+    drawText(ctx, Math.floor(times[i]), currentX, currentY);
+    drawText(ctx, names[i], currentX, CLOUD_Y + CLOUD_HEIGHT - GAP);
   }
 };
