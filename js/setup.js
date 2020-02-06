@@ -15,7 +15,7 @@
 
   var changeWizardColor = function (value, arr, cssProperty, modifiedPart) {
     var wizardValue = mainPopup.querySelector(value);
-    var randomValue = window.util.getRandomValue(arr);
+    var randomValue = window.utils.getRandomValue(arr);
     modifiedPart.style = cssProperty + ':' + randomValue;
     wizardValue.value = randomValue;
   };
@@ -34,10 +34,10 @@
 
   var createWizard = function () {
     var wizard = {};
-    wizard.name = window.util.getRandomValue(NAMES);
-    wizard.surname = window.util.getRandomValue(SURNAMES);
-    wizard.coatColor = window.util.getRandomValue(COAT_COLORS);
-    wizard.eyesColor = window.util.getRandomValue(EYES_COLORS);
+    wizard.name = window.utils.getRandomValue(NAMES);
+    wizard.surname = window.utils.getRandomValue(SURNAMES);
+    wizard.coatColor = window.utils.getRandomValue(COAT_COLORS);
+    wizard.eyesColor = window.utils.getRandomValue(EYES_COLORS);
     return wizard;
   };
 
@@ -73,7 +73,7 @@
     similarListElement.appendChild(fragment);
   };
 
-  renderWizards(createWizardsCollection(4));
+  renderWizards(createWizardsCollection(window.utils.quantityWizards));
   mainPopup.querySelector('.setup-similar').classList.remove('hidden');
 })();
 

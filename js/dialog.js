@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEY = 'Escape';
-  var ENTER_KEY = 'Enter';
-
   var mainPopup = document.querySelector('.setup');
   var mainPopupOpen = document.querySelector('.setup-open');
   var mainPopupClose = mainPopup.querySelector('.setup-close');
@@ -11,11 +8,7 @@
   var dialogHandle = document.querySelector('.upload');
 
   var onPopupEcsPress = function (evt) {
-    if (evt.key === ESC_KEY) {
-      if (evt.target !== userNameInput) {
-        closePopup();
-      }
-    }
+    window.utils.isEcsEvent(evt, closePopup, userNameInput);
   };
 
   var openPopup = function () {
@@ -35,9 +28,7 @@
   });
 
   mainPopupOpen.addEventListener('keydown', function (evt) {
-    if (evt.key === ENTER_KEY) {
-      openPopup();
-    }
+    window.utils.isEnterEvent(evt, openPopup);
   });
 
   mainPopupClose.addEventListener('click', function () {
@@ -45,9 +36,7 @@
   });
 
   mainPopupClose.addEventListener('keydown', function (evt) {
-    if (evt.key === ENTER_KEY) {
-      closePopup();
-    }
+    window.utils.isEnterEvent(evt, closePopup);
   });
 
   dialogHandle.addEventListener('mousedown', function (evt) {
