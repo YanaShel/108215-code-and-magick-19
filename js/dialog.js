@@ -8,7 +8,9 @@
   var dialogHandle = document.querySelector('.upload');
 
   var onPopupEcsPress = function (evt) {
-    window.utils.isEcsEvent(evt, closePopup, userNameInput);
+    if (evt.key === window.utils.ESC_KEY && evt.target !== userNameInput) {
+      closePopup();
+    }
   };
 
   var openPopup = function () {
@@ -28,7 +30,9 @@
   });
 
   mainPopupOpen.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, openPopup);
+    if (evt.key === window.utils.ENTER_KEY) {
+      openPopup();
+    }
   });
 
   mainPopupClose.addEventListener('click', function () {
@@ -36,7 +40,9 @@
   });
 
   mainPopupClose.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, closePopup);
+    if (evt.key === window.utils.ENTER_KEY) {
+      closePopup();
+    }
   });
 
   dialogHandle.addEventListener('mousedown', function (evt) {
