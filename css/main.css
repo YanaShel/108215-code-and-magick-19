@@ -1019,3 +1019,18 @@ input[type=radio]:checked + .review-mark-label
 
     opacity: 0;
 }
+.error
+{
+  z-index: 100;
+  position: absolute;
+  left: 36%;
+  top: 20%;
+  width: 400px;
+  padding: 120px 20px 40px;
+  color: #0000FF;
+  font-size: 24px;
+  text-align: center;
+  line-height: 30px;
+  background: no-repeat url('../img/error.png') 50% 5% #DCDCDC;
+  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.25);
+}
