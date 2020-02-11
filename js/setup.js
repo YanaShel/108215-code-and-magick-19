@@ -1,12 +1,14 @@
 'use strict';
 
 (function () {
+  var QUANTITY_WIZARD = 4;
+  var TIMEOUT_IN_MS = 5000;
   var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
   var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
   var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
 
   var mainPopup = document.querySelector('.setup');
-  var form = mainPopup.querySelector('.setup-wizard-form');
+  var formMainPopup = mainPopup.querySelector('.setup-wizard-form');
   var activeSetupWizard = mainPopup.querySelector('.setup-wizard');
   var userNameInput = mainPopup.querySelector('.setup-user-name');
   var activeWizardFireball = mainPopup.querySelector('.setup-fireball');
@@ -50,7 +52,7 @@
 
   var renderWizards = function (wizards) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < QUANTITY_WIZARD; i++) {
       var randomWizard = window.utils.getRandomValue(wizards);
       fragment.appendChild(renderWizard(randomWizard));
     }
@@ -71,10 +73,16 @@
     node.textContent = errorMessage;
 
     document.body.insertAdjacentElement('afterbegin', node);
+    setTimeout(removeErrorMessage, TIMEOUT_IN_MS);
+  };
+
+  var removeErrorMessage = function () {
+    var errorMessage = document.querySelector('.error');
+    document.body.removeChild(errorMessage);
   };
 
   var onFormSubmit = function (evt) {
-    window.backend.save(new FormData(form), function () {
+    window.backend.save(new FormData(formMainPopup), function () {
       mainPopup.classList.add('hidden');
       resetForm();
     }, showErrorMessage);
@@ -83,7 +91,7 @@
   };
 
   window.backend.load(renderWizards, showErrorMessage);
-  form.addEventListener('submit', onFormSubmit);
+  formMainPopup.addEventListener('submit', onFormSubmit);
 
 })();
 
