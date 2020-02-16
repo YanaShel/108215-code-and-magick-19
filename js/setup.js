@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var QUANTITY_WIZARD = 4;
   var TIMEOUT_IN_MS = 5000;
   var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
   var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
@@ -15,50 +14,59 @@
   var activeWizardCoat = activeSetupWizard.querySelector('.wizard-coat');
   var activeWizardEyes = activeSetupWizard.querySelector('.wizard-eyes');
 
-  var changeWizardColor = function (value, arr, cssProperty, modifiedPart) {
+  var coatColor;
+  var eyesColor;
+  var wizards = [];
+
+  var updateWizards = function () {
+    var sameCoatAndEyesWizards = wizards.filter(function (wizard) {
+      return wizard.colorCoat === coatColor && wizard.colorEyes === eyesColor;
+    });
+    var sameCoatWizards = wizards.filter(function (wizard) {
+      return wizard.colorCoat === coatColor;
+    });
+    var sameEyesWizards = wizards.filter(function (wizard) {
+      return wizard.colorEyes === eyesColor;
+    });
+
+    var filteredWizards = sameCoatAndEyesWizards;
+    filteredWizards = filteredWizards.concat(sameCoatWizards);
+    filteredWizards = filteredWizards.concat(sameEyesWizards);
+    filteredWizards = filteredWizards.concat(wizards);
+
+    var uniqueWizards = filteredWizards.filter(function (wizard, index) {
+      return filteredWizards.indexOf(wizard) === index;
+    });
+
+    window.render.renderWizards(uniqueWizards);
+  };
+
+  var onSuccessLoad = function (data) {
+    wizards = data;
+    updateWizards();
+  };
+
+  var changeWizardColor = function (value, arr, cssProperty, wizardElement) {
     var wizardValue = mainPopup.querySelector(value);
-    var randomValue = window.utils.getRandomValue(arr);
-    modifiedPart.style = cssProperty + ':' + randomValue;
-    wizardValue.value = randomValue;
+    var newColor = window.utils.getRandomValue(arr);
+    wizardElement.style = cssProperty + ':' + newColor;
+    wizardValue.value = newColor;
+    return newColor;
   };
 
   activeWizardCoat.addEventListener('click', function (evt) {
-    changeWizardColor('[name="coat-color"]', COAT_COLORS, 'fill', evt.target);
+    coatColor = changeWizardColor('[name="coat-color"]', COAT_COLORS, 'fill', evt.target);
+    updateWizards();
   });
 
   activeWizardEyes.addEventListener('click', function (evt) {
-    changeWizardColor('[name="eyes-color"]', EYES_COLORS, 'fill', evt.target);
+    eyesColor = changeWizardColor('[name="eyes-color"]', EYES_COLORS, 'fill', evt.target);
+    updateWizards();
   });
 
   activeWizardFireball.addEventListener('click', function (evt) {
     changeWizardColor('[name="fireball-color"]', FIREBALL_COLORS, 'background-color', evt.target);
   });
-
-  var similarListElement = mainPopup.querySelector('.setup-similar-list');
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template')
-    .content
-    .querySelector('.setup-similar-item');
-
-  var renderWizard = function (wizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
-    var wizardLabel = wizardElement.querySelector('.setup-similar-label');
-    var wizardCoat = wizardElement.querySelector('.wizard-coat');
-    var wizardEyes = wizardElement.querySelector('.wizard-eyes');
-    wizardLabel.textContent = wizard.name;
-    wizardCoat.style.fill = wizard.colorCoat;
-    wizardEyes.style.fill = wizard.colorEyes;
-    return wizardElement;
-  };
-
-  var renderWizards = function (wizards) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < QUANTITY_WIZARD; i++) {
-      var randomWizard = window.utils.getRandomValue(wizards);
-      fragment.appendChild(renderWizard(randomWizard));
-    }
-    similarListElement.appendChild(fragment);
-    mainPopup.querySelector('.setup-similar').classList.remove('hidden');
-  };
 
   var resetForm = function () {
     userNameInput.value = 'Синий Пендальф';
@@ -67,7 +75,7 @@
     activeWizardFireball.style = 'background-color: #ee4830';
   };
 
-  var showErrorMessage = function (errorMessage) {
+  var onErrorLoad = function (errorMessage) {
     var node = document.createElement('div');
     node.classList.add('error');
     node.textContent = errorMessage;
@@ -85,12 +93,12 @@
     window.backend.save(new FormData(formMainPopup), function () {
       mainPopup.classList.add('hidden');
       resetForm();
-    }, showErrorMessage);
+    }, onErrorLoad);
     evt.preventDefault();
 
   };
 
-  window.backend.load(renderWizards, showErrorMessage);
+  window.backend.load(onSuccessLoad, onErrorLoad);
   formMainPopup.addEventListener('submit', onFormSubmit);
 
 })();
