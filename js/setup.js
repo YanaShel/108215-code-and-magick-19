@@ -47,12 +47,12 @@
     }));
   };
 
-  window.wizard.onEyesChange = window.debounce(function (color) {
+  window.wizard.wizard.onEyesChange = window.utils.debounce(function (color) {
     eyesColor = color;
     updateWizards();
   });
 
-  window.wizard.onCoatChange = window.debounce(function (color) {
+  window.wizard.wizard.onCoatChange = window.utils.debounce(function (color) {
     coatColor = color;
     updateWizards();
   });

@@ -16,28 +16,29 @@
     onEyesChange: function () {}
   };
 
-  activeWizardCoat.addEventListener('click', function (evt) {
-    var wizardValue = mainPopup.querySelector('[name="coat-color"]');
-    var newColor = window.utils.getRandomValue(COAT_COLORS);
-    evt.target.style.fill = newColor;
+  var changeWizardColor = function (value, arr, cssProperty, modifiedPart) {
+    var wizardValue = mainPopup.querySelector(value);
+    var newColor = window.utils.getRandomValue(arr);
+    modifiedPart.style = cssProperty + ':' + newColor;
     wizardValue.value = newColor;
+    return newColor;
+  };
+
+  activeWizardCoat.addEventListener('click', function (evt) {
+    var newColor = changeWizardColor('[name="coat-color"]', COAT_COLORS, 'fill', evt.target);
     wizard.onCoatChange(newColor);
   });
 
   activeWizardEyes.addEventListener('click', function (evt) {
-    var wizardValue = mainPopup.querySelector('[name="eyes-color"]');
-    var newColor = window.utils.getRandomValue(EYES_COLORS);
-    evt.target.style.fill = newColor;
-    wizardValue.value = newColor;
+    var newColor = changeWizardColor('[name="eyes-color"]', EYES_COLORS, 'fill', evt.target);
     wizard.onEyesChange(newColor);
   });
 
   activeWizardFireball.addEventListener('click', function (evt) {
-    var wizardValue = mainPopup.querySelector('[name="fireball-color"]');
-    var newColor = window.utils.getRandomValue(FIREBALL_COLORS);
-    evt.target.style.backgroundColor = newColor;
-    wizardValue.value = newColor;
+    changeWizardColor('[name="fireball-color"]', FIREBALL_COLORS, 'background-color', evt.target);
   });
 
-  window.wizard = wizard;
+  window.wizard = {
+    wizard: wizard
+  };
 })();
