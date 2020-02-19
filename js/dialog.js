@@ -6,6 +6,7 @@
   var mainPopupClose = mainPopup.querySelector('.setup-close');
   var userNameInput = mainPopup.querySelector('.setup-user-name');
   var dialogHandle = document.querySelector('.upload');
+  var fileChooser = dialogHandle.querySelector('input[type=file]');
 
   var onPopupEcsPress = function (evt) {
     if (evt.key === window.utils.ESC_KEY && evt.target !== userNameInput) {
@@ -23,6 +24,7 @@
   var closePopup = function () {
     mainPopup.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEcsPress);
+    fileChooser.removeEventListener('change', window.avatar.onChangeAvatar);
   };
 
   mainPopupOpen.addEventListener('click', function () {
